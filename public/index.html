@@ -131,6 +131,44 @@
     .play-btn:hover {
       background: #99114f;
     }
+
+    .modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 900px;
+  margin: 5% auto;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+iframe {
+  width: 100%;
+  height: 500px;
+  border: none;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+    
     @media screen and (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -141,6 +179,17 @@
     }
   </style>
 </head>
+
+
+  <!-- Modal para mostrar el juego -->
+<div class="modal" id="gameModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal()">✖</button>
+    <iframe id="gameFrame" src=""></iframe>
+  </div>
+</div>
+
+  
 <body>
   <header>
     <h1>Ajolote Aprende</h1>
@@ -225,7 +274,7 @@
             <span class="tag">${juego.campo}</span>
             ${juego.habilidades.map(h => `<span class="tag">${h}</span>`).join('')}
           </div>
-          <a class="play-btn" href="${juego.enlace}" target="_blank">Jugar</a>
+          <button class="play-btn" onclick="openModal('${juego.enlace}')">Jugar</button>
         `;
         lista.appendChild(card);
       });
@@ -257,6 +306,38 @@
     });
 
     getJuegos();
+
+    window.openModal = function(url) {
+  const modal = document.getElementById('gameModal');
+  const frame = document.getElementById('gameFrame');
+  frame.src = url;
+  modal.style.display = 'block';
+};
+
+window.closeModal = function() {
+  const modal = document.getElementById('gameModal');
+  const frame = document.getElementById('gameFrame');
+  frame.src = '';
+  modal.style.display = 'none';
+};
+
+    // Cerrar modal al presionar Esc
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeModal();
+  }
+});
+
+// Cerrar modal al hacer clic fuera del contenido
+document.getElementById('gameModal').addEventListener('click', (e) => {
+  const modalContent = document.querySelector('.modal-content');
+  if (!modalContent.contains(e.target)) {
+    closeModal();
+  }
+});
+
+
+    
   </script>
 </body>
 </html>
